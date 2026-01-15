@@ -48,3 +48,11 @@ Stored in `todos.json`. Note that `id` must be unique (UUID).
     - Show message when no to-do items exist
     - Add menu option: [3] View all to-do items
     - Return to main menu after viewing   
+
+- [ ] **5.View to-do-list item details**
+    - Show to-do-list item details
+    - item details contain: Title, Details, Priority (high, low, mid), Status (completed, pending), Owner, Updated date, Created date
+    - Show message when no to-do-list item details exist
+    - Add menu option: [5] View to-do-list item details
+    - Return to main menu after viewing
+

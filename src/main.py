@@ -136,11 +136,12 @@ class App:
             print("[2] View my todos")
             print("[3] Edit a todo")
             print("[4] Mark todo as completed")
-            print("[5] Delete a todo")
-            print("[6] Logout")
+            print("[5] View todo details")
+            print("[6] Delete a todo")
+            print("[7] Logout")
             print("="*40)
             
-            choice = input("Enter your choice (1-6): ").strip()
+            choice = input("Enter your choice (1-7): ").strip()
             
             if choice == "1":
                 self.handle_create_todo()
@@ -151,8 +152,10 @@ class App:
             elif choice == "4":
                 self.handle_mark_completed()
             elif choice == "5":
-                self.handle_delete_todo()
+                self.handle_view_todo_details()
             elif choice == "6":
+                self.handle_delete_todo()
+            elif choice == "7":
                 print(f"Goodbye, {self.current_user}!")
                 self.current_user = None
                 break
@@ -206,6 +209,46 @@ class App:
             print(f"    Priority: {todo.priority.value}")
             print(f"    Status: {todo.status.value}")
             print(f"    ID: {todo.id}")
+    
+    def handle_view_todo_details(self):
+        """Handle viewing details of a specific todo item."""
+        todos = self.todo_manager.get_todos_by_user(self.current_user)
+        
+        if not todos:
+            print("\nYou have no todos to view.")
+            return
+        
+        print("\n--- Select Todo to View Details ---")
+        for i, todo in enumerate(todos, 1):
+            status_symbol = "✓" if todo.status == Status.COMPLETED else "○"
+            print(f"[{i}] {status_symbol} {todo.title}")
+        
+        choice = input("Enter todo number: ").strip()
+        try:
+            index = int(choice) - 1
+            if 0 <= index < len(todos):
+                todo = todos[index]
+                self._display_todo_details(todo)
+            else:
+                print("Invalid choice.")
+        except ValueError:
+            print("Please enter a valid number.")
+    
+    def _display_todo_details(self, todo):
+        """Display full details of a todo item."""
+        status_symbol = "✓" if todo.status == Status.COMPLETED else "○"
+        print("\n" + "="*40)
+        print(f"Todo Details: {status_symbol} {todo.title}")
+        print("="*40)
+        print(f"Title:        {todo.title}")
+        print(f"Details:      {todo.details}")
+        print(f"Priority:     {todo.priority.value}")
+        print(f"Status:       {todo.status.value}")
+        print(f"Owner:        {todo.owner}")
+        print(f"Created At:   {todo.created_at}")
+        print(f"Updated At:   {todo.updated_at}")
+        print(f"ID:           {todo.id}")
+        print("="*40)
     
     def handle_edit_todo(self):
         """Handle editing a todo."""
