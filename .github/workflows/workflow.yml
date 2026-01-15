@@ -3,7 +3,7 @@
     push:
       branches:
         - main
-  pull_request:
+    pull_request:
       types: [opened, synchronize, reopened]
   jobs:
     smoke-test:
