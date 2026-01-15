@@ -11,6 +11,7 @@ from typing import Optional, List
 
 class Priority(Enum):
     """Priority levels for todo items."""
+
     HIGH = "HIGH"
     MID = "MID"
     LOW = "LOW"
@@ -18,6 +19,7 @@ class Priority(Enum):
 
 class Status(Enum):
     """Status states for todo items."""
+
     PENDING = "PENDING"
     COMPLETED = "COMPLETED"
 
@@ -25,6 +27,7 @@ class Status(Enum):
 @dataclass
 class TodoItem:
     """Represents a single todo item."""
+
     title: str
     details: str
     priority: Priority
@@ -85,9 +88,7 @@ class TodoManager:
         self, title: str, details: str, priority: Priority, owner: str
     ) -> TodoItem:
         """Create a new todo item."""
-        todo = TodoItem(
-            title=title, details=details, priority=priority, owner=owner
-        )
+        todo = TodoItem(title=title, details=details, priority=priority, owner=owner)
         todos = self.load_todos()
         todos.append(todo)
         self.save_todos(todos)

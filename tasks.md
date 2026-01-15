@@ -50,9 +50,20 @@ Stored in `todos.json`. Note that `id` must be unique (UUID).
     - Return to main menu after viewing   
 
 - [ ] **5.View to-do-list item details**
-    - Show to-do-list item details
-    - item details contain: Title, Details, Priority (high, low, mid), Status (completed, pending), Owner, Updated date, Created date
-    - Show message when no to-do-list item details exist
-    - Add menu option: [5] View to-do-list item details
-    - Return to main menu after viewing
+    - Show to-do-list item details.
+    - Item details contain: Title, Details, Priority (high, low, mid), Status (completed, pending), Owner, Updated date, Created date.
+    - Show message when no to-do-list item details exist.
+    - Add menu option: [5] View to-do-list item details.
+    - Return to main menu after viewing.
 
+- [ ] **6.Mark a to-do-list item as completed**
+    - Show to-do-list items with index or ID.
+    - Indicate current status (PENDING/COMPLETED).
+    - Allow user to choose a to-do item by ID.
+    - Validate selected item.
+    - Change item status from PENDING to COMPLETED.
+    - Prevent duplicate completion.
+    - Persist updated status to storage.
+    - Show configuration message after completion.
+    - Add menu option: [6] Mark a to-do-list item as completed.
+    - Return to main menu after viewing.
