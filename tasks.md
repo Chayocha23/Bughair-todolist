@@ -42,4 +42,9 @@ Stored in `todos.json`. Note that `id` must be unique (UUID).
 - [ ] **3. Create and edit a to-do-list item**
     - Create to-do-list item.
     - Edit to-do-list item.
-    
+
+- [ ] **4. View all to-do-list items**
+    - Load all to-do items of the current user
+    - Show message when no to-do items exist
+    - Add menu option: [3] View all to-do items
+    - Return to main menu after viewing   
