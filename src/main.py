@@ -1,7 +1,6 @@
 """Main entry point for the CLI To-Do List Application."""
 
 import json
-import os
 from pathlib import Path
 from models import TodoManager, Priority, Status
 
@@ -15,35 +14,35 @@ TODOS_FILE = DATA_DIR / "todos.json"
 def ensure_data_files():
     """Ensure data directory and files exist."""
     DATA_DIR.mkdir(exist_ok=True)
-    
+
     if not USERS_FILE.exists():
         USERS_FILE.write_text(json.dumps([]))
-    
+
     if not TODOS_FILE.exists():
         TODOS_FILE.write_text(json.dumps([]))
 
 
 class AuthManager:
     """Manages user authentication and registration."""
-    
+
     def __init__(self, users_file: Path = USERS_FILE):
         self.users_file = users_file
-    
+
     def load_users(self) -> list:
         """Load users from JSON file."""
         with open(self.users_file, "r") as f:
             return json.load(f)
-    
+
     def save_users(self, users: list):
         """Save users to JSON file."""
         with open(self.users_file, "w") as f:
             json.dump(users, f, indent=2)
-    
+
     def user_exists(self, username: str) -> bool:
         """Check if a user exists."""
         users = self.load_users()
         return any(user["username"] == username for user in users)
-    
+
     def login(self, username: str, password: str) -> bool:
         """Authenticate a user."""
         users = self.load_users()
@@ -51,12 +50,12 @@ class AuthManager:
             if user["username"] == username and user["password"] == password:
                 return True
         return False
-    
+
     def signup(self, username: str, password: str) -> bool:
         """Register a new user."""
         if self.user_exists(username):
             return False
-        
+
         users = self.load_users()
         users.append({"username": username, "password": password})
         self.save_users(users)
@@ -65,26 +64,26 @@ class AuthManager:
 
 class App:
     """Main application class for the CLI."""
-    
+
     def __init__(self):
         self.auth_manager = AuthManager()
         self.todo_manager = TodoManager(TODOS_FILE)
         self.current_user = None
         ensure_data_files()
-    
+
     def show_pre_login_menu(self):
         """Display pre-login menu and handle user input."""
         while True:
-            print("\n" + "="*40)
+            print("\n" + "=" * 40)
             print("Welcome to Todo List Application")
-            print("="*40)
+            print("=" * 40)
             print("[1] Login")
             print("[2] Sign Up")
             print("[3] Exit")
-            print("="*40)
-            
+            print("=" * 40)
+
             choice = input("Enter your choice (1-3): ").strip()
-            
+
             if choice == "1":
                 self.handle_login()
             elif choice == "2":
@@ -94,12 +93,12 @@ class App:
                 break
             else:
                 print("Invalid choice. Please try again.")
-    
+
     def handle_login(self):
         """Handle user login."""
         username = input("Enter username: ").strip()
         password = input("Enter password: ").strip()
-        
+
         if self.auth_manager.login(username, password):
             self.current_user = username
             print(f"\nWelcome back, {username}!")
@@ -108,30 +107,30 @@ class App:
         else:
             print("Invalid username or password.")
             return False
-    
+
     def handle_signup(self):
         """Handle user sign up."""
         username = input("Enter new username: ").strip()
         password = input("Enter password: ").strip()
         confirm_password = input("Confirm password: ").strip()
-        
+
         if password != confirm_password:
             print("Passwords do not match.")
             return False
-        
+
         if self.auth_manager.signup(username, password):
             print(f"Account created successfully for {username}!")
             return True
         else:
             print("Username already exists.")
             return False
-    
+
     def show_main_menu(self):
         """Display main menu for logged-in user."""
         while self.current_user:
-            print("\n" + "="*40)
+            print("\n" + "=" * 40)
             print(f"Welcome, {self.current_user}")
-            print("="*40)
+            print("=" * 40)
             print("[1] Create a new todo")
             print("[2] View my todos")
             print("[3] Edit a todo")
@@ -139,10 +138,10 @@ class App:
             print("[5] View todo details")
             print("[6] Delete a todo")
             print("[7] Logout")
-            print("="*40)
-            
+            print("=" * 40)
+
             choice = input("Enter your choice (1-7): ").strip()
-            
+
             if choice == "1":
                 self.handle_create_todo()
             elif choice == "2":
@@ -161,7 +160,7 @@ class App:
                 break
             else:
                 print("Invalid choice. Please try again.")
-    
+
     def handle_create_todo(self):
         """Handle creating a new todo."""
         print("\n--- Create New Todo ---")
@@ -169,22 +168,22 @@ class App:
         if not title:
             print("Title cannot be empty.")
             return
-        
+
         details = input("Enter todo details: ").strip()
-        
+
         print("\nSelect priority:")
         print("[1] HIGH")
         print("[2] MID")
         print("[3] LOW")
         priority_choice = input("Enter priority (1-3): ").strip()
-        
+
         priority_map = {"1": Priority.HIGH, "2": Priority.MID, "3": Priority.LOW}
         if priority_choice not in priority_map:
             print("Invalid priority choice.")
             return
-        
+
         priority = priority_map[priority_choice]
-        
+
         todo = self.todo_manager.create_todo(
             title=title,
             details=details,
@@ -192,15 +191,15 @@ class App:
             owner=self.current_user,
         )
         print(f"\nTodo created successfully! (ID: {todo.id})")
-    
+
     def handle_view_todos(self):
         """Handle viewing user's todos."""
         todos = self.todo_manager.get_todos_by_user(self.current_user)
-        
+
         if not todos:
             print("\nYou have no todos.")
             return
-        
+
         print(f"\n--- Your Todos ({len(todos)}) ---")
         for i, todo in enumerate(todos, 1):
             status_symbol = "✓" if todo.status == Status.COMPLETED else "○"
@@ -209,20 +208,20 @@ class App:
             print(f"    Priority: {todo.priority.value}")
             print(f"    Status: {todo.status.value}")
             print(f"    ID: {todo.id}")
-    
+
     def handle_view_todo_details(self):
         """Handle viewing details of a specific todo item."""
         todos = self.todo_manager.get_todos_by_user(self.current_user)
-        
+
         if not todos:
             print("\nYou have no todos to view.")
             return
-        
+
         print("\n--- Select Todo to View Details ---")
         for i, todo in enumerate(todos, 1):
             status_symbol = "✓" if todo.status == Status.COMPLETED else "○"
             print(f"[{i}] {status_symbol} {todo.title}")
-        
+
         choice = input("Enter todo number: ").strip()
         try:
             index = int(choice) - 1
@@ -233,13 +232,13 @@ class App:
                 print("Invalid choice.")
         except ValueError:
             print("Please enter a valid number.")
-    
+
     def _display_todo_details(self, todo):
         """Display full details of a todo item."""
         status_symbol = "✓" if todo.status == Status.COMPLETED else "○"
-        print("\n" + "="*40)
+        print("\n" + "=" * 40)
         print(f"Todo Details: {status_symbol} {todo.title}")
-        print("="*40)
+        print("=" * 40)
         print(f"Title:        {todo.title}")
         print(f"Details:      {todo.details}")
         print(f"Priority:     {todo.priority.value}")
@@ -248,20 +247,20 @@ class App:
         print(f"Created At:   {todo.created_at}")
         print(f"Updated At:   {todo.updated_at}")
         print(f"ID:           {todo.id}")
-        print("="*40)
-    
+        print("=" * 40)
+
     def handle_edit_todo(self):
         """Handle editing a todo."""
         todos = self.todo_manager.get_todos_by_user(self.current_user)
-        
+
         if not todos:
             print("\nYou have no todos to edit.")
             return
-        
+
         print("\n--- Select Todo to Edit ---")
         for i, todo in enumerate(todos, 1):
             print(f"[{i}] {todo.title}")
-        
+
         choice = input("Enter todo number to edit: ").strip()
         try:
             index = int(choice) - 1
@@ -272,7 +271,7 @@ class App:
                 print("Invalid choice.")
         except ValueError:
             print("Please enter a valid number.")
-    
+
     def _edit_todo_fields(self, todo):
         """Edit individual fields of a todo."""
         print(f"\n--- Editing: {todo.title} ---")
@@ -280,9 +279,9 @@ class App:
         print("[2] Edit details")
         print("[3] Edit priority")
         print("[4] Cancel")
-        
+
         choice = input("What would you like to edit? (1-4): ").strip()
-        
+
         if choice == "1":
             new_title = input("Enter new title: ").strip()
             if new_title:
@@ -312,20 +311,20 @@ class App:
             print("Edit cancelled.")
         else:
             print("Invalid choice.")
-    
+
     def handle_mark_completed(self):
         """Handle marking a todo as completed."""
         todos = self.todo_manager.get_todos_by_user(self.current_user)
-        
+
         if not todos:
             print("\nYou have no todos.")
             return
-        
+
         print("\n--- Select Todo to Mark Completed ---")
         for i, todo in enumerate(todos, 1):
             status_symbol = "✓" if todo.status == Status.COMPLETED else "○"
             print(f"[{i}] {status_symbol} {todo.title}")
-        
+
         choice = input("Enter todo number: ").strip()
         try:
             index = int(choice) - 1
@@ -340,27 +339,29 @@ class App:
                 print("Invalid choice.")
         except ValueError:
             print("Please enter a valid number.")
-    
+
     def handle_delete_todo(self):
         """Handle deleting a todo."""
         todos = self.todo_manager.get_todos_by_user(self.current_user)
-        
+
         if not todos:
             print("\nYou have no todos to delete.")
             return
-        
+
         print("\n--- Select Todo to Delete ---")
         for i, todo in enumerate(todos, 1):
             print(f"[{i}] {todo.title}")
-        
+
         choice = input("Enter todo number to delete: ").strip()
         try:
             index = int(choice) - 1
             if 0 <= index < len(todos):
                 todo = todos[index]
-                confirm = input(
-                    f"Are you sure you want to delete '{todo.title}'? (y/n): "
-                ).strip().lower()
+                confirm = (
+                    input(f"Are you sure you want to delete '{todo.title}'? (y/n): ")
+                    .strip()
+                    .lower()
+                )
                 if confirm == "y":
                     if self.todo_manager.delete_todo(todo.id):
                         print("Todo deleted successfully!")
@@ -372,7 +373,7 @@ class App:
                 print("Invalid choice.")
         except ValueError:
             print("Please enter a valid number.")
-    
+
     def run(self):
         """Start the application."""
         self.show_pre_login_menu()
