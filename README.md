@@ -14,6 +14,10 @@ Users of the application will be able to perform the following tasks:
     - Created date
     - Updated date
 - Mark a to-do-list item as completed
-
- 
- 
+---
+### Team Members
+- 6688069 Worasuda Ngamyingsurat
+- 6688131 Chayocha Thongprasert
+- 6688198 Teeratat Kunvoratham
+- 6688201 Narmeen Masoodi
+- 6688209 Poschapat Phetcharawut
