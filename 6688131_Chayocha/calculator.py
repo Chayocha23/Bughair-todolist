@@ -18,15 +18,18 @@ class Calculator:
         """Multiply two numbers."""
         return a * b
 
-    def divide(self, a, b):
-        """Divide a by b."""
-        if b == 0:
-            raise ValueError("Cannot divide by zero")
-        return a / b
-        
-    def calculate_velocity(distance: float, time: float) -> float:
+
+def divide(a, b):
+    """Divide two numbers."""
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
+
+def calculate_velocity(distance: float, time: float) -> float:
+    """Calculate velocity from distance and time."""
+    # Check for invalid input: time must be greater than zero [cite: 405, 419]
     if time <= 0:
-        raise ValueError("Time must be greater than zero")
+        raise ValueError("Time must be greater than zero") [cite: 420]
     return distance / time
 
 def main():
