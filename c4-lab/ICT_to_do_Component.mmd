@@ -1,0 +1,45 @@
+C4Component
+    title ICT To Do List - Component Diagram (Web API)
+
+    Container_Boundary(webAPI, "Web API") {
+        Component(authComponent, "Authentication & Authorization", "Python Module", "Handles login, token validation, and access control checks")
+        Component(taskComponent, "Task Management", "Python Module", "Handles CRUD operations for manual and imported tasks")
+        Component(syncOrchestrator, "MyCourses Sync Orchestrator", "Python Module", "Manages the sync workflow and decides when to call external services and how to update tasks")
+        Component(mycourseClient, "MyCourses Client", "Python Module", "Calls MyCourses web services, handles HTTPS requests and JSON parsing")
+        Component(mappingComponent, "Mapping", "Python Module", "Converts MyCourses assignment and submission data into internal task model")
+        Component(syncHistoryComponent, "Sync History", "Python Module", "Records sync outcomes and provides data for admin monitoring")
+        Component(dataAccessComponent, "Data Access", "Python Module / ORM", "Provides repository functions for PostgreSQL access and ensures controlled transactions")
+    }
+
+    Container_Boundary(external, "External Systems") {
+        Container(database, "Database", "PostgreSQL", "User profiles, tasks, sync settings, and sync history")
+        Container(mycourses, "MyCourses", "External Service", "ICT e-learning platform with courses, assignments, and submission data")
+    }
+
+    Container_Boundary(clients, "Clients") {
+        Container(webApp, "Web App", "React SPA", "Browser-based user interface")
+        Container(mobileApp, "Mobile App", "Flutter", "Cross-platform mobile application")
+    }
+
+    Rel(webApp, taskComponent, "REST calls")
+    Rel(mobileApp, taskComponent, "REST calls")
+    
+    Rel(taskComponent, authComponent, "Requests access control")
+    Rel(taskComponent, dataAccessComponent, "Reads/writes tasks")
+    Rel(taskComponent, syncHistoryComponent, "Records operations")
+    
+    Rel(webApp, syncOrchestrator, "Requests sync")
+    Rel(mobileApp, syncOrchestrator, "Requests sync")
+    
+    Rel(syncOrchestrator, authComponent, "Validates user")
+    Rel(syncOrchestrator, mycourseClient, "Calls to retrieve assignments")
+    Rel(syncOrchestrator, mappingComponent, "Maps external data")
+    Rel(syncOrchestrator, taskComponent, "Updates tasks")
+    Rel(syncOrchestrator, syncHistoryComponent, "Records sync results")
+    
+    Rel(mycourseClient, mycourses, "HTTPS requests/responses (JSON)")
+    
+    Rel(mappingComponent, mycourseClient, "Receives raw data")
+    
+    Rel(dataAccessComponent, database, "SQL via ORM (SQLAlchemy)")
+    Rel(syncHistoryComponent, dataAccessComponent, "Persists sync logs")
