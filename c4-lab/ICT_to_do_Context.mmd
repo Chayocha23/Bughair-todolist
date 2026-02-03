@@ -1,0 +1,28 @@
+C4Context
+title System Context diagram for ICT To Do List (Enhanced Version)
+
+Person(student, "Student", "Manages personal tasks and tracks course work via web or mobile.")
+Person(instructor, "Instructor", "Monitors teaching-related tasks and assignment deadlines.")
+Person(admin, "System Administrator", "Configures system, manages accounts, and monitors sync health.")
+
+System_Boundary(ict_todo_system, "ICT To Do List Platform") {
+    System(web_app, "Web Interface", "React-based UI for desktop users.")
+    System(mobile_app, "Mobile Interface", "Flutter-based UI for mobile users.")
+    System(ict_backend, "Core Service (API)", "Handles logic, task storage, and sync orchestration.")
+}
+
+System_Ext(mycourses, "MyCourses", "External ICT e-learning system (Source of truth for assignments).")
+System_Ext(sso, "University SSO", "External Authentication Provider (OAuth2 / OpenID Connect).")
+
+Rel(student, web_app, "Uses", "HTTPS")
+Rel(student, mobile_app, "Uses", "HTTPS")
+Rel(instructor, web_app, "Views deadlines", "HTTPS")
+Rel(admin, web_app, "Manages system", "HTTPS")
+
+Rel(web_app, ict_backend, "Calls API", "JSON/HTTPS")
+Rel(mobile_app, ict_backend, "Calls API", "JSON/HTTPS")
+
+Rel(ict_backend, mycourses, "Syncs assignment data", "JSON/HTTPS")
+Rel(ict_backend, sso, "Authenticates users", "OAuth2/OIDC")
+
+UpdateLayoutConfig($c4ShapeInRow="3")
