@@ -1,0 +1,26 @@
+graph TB
+    Student["👤 Student<br/>Main user who manages<br/>personal task list and<br/>syncs with MyCourses"]
+    
+    Instructor["👤 Instructor<br/>Views teaching-related tasks<br/>and monitors assignment<br/>deadlines"]
+    
+    Admin["👤 System Administrator<br/>Manages configuration,<br/>user accounts, and<br/>monitors sync health"]
+    
+    TodoSystem["<b>ICT To Do List</b><br/>━━━━━━━━━━━━━━━━<br/>Task management system<br/>supporting Web and Mobile<br/>applications for tracking<br/>personal tasks and syncing<br/>course assignments"]
+    
+    MyCourses["📚 MyCourses<br/>External e-learning system<br/>that owns course, assignment,<br/>and submission data"]
+    
+    Student -->|Uses| TodoSystem
+    Instructor -->|Uses| TodoSystem
+    Admin -->|Uses| TodoSystem
+    
+    TodoSystem -->|Syncs courses, assignments,<br/>and submission status<br/>via REST/JSON over HTTPS| MyCourses
+    
+    MyCourses -->|Returns assignment and<br/>submission data| TodoSystem
+    
+    classDef system fill:#1168bd,stroke:#000,stroke-width:3px,color:#fff,font-size:14px
+    classDef user fill:#08427b,stroke:#000,stroke-width:2px,color:#fff,font-size:12px
+    classDef external fill:#999,stroke:#000,stroke-width:2px,color:#fff,font-size:12px
+    
+    class TodoSystem system
+    class Student,Instructor,Admin user
+    class MyCourses external
